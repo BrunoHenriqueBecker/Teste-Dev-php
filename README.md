@@ -1,71 +1,117 @@
-  # **Teste para Desenvolvedor: API de Cadastro de Clientes com Validação de CEP**
+API de Cadastro de Clientes - README
+Descrição
+API para cadastro de clientes com validação de CPF e CEP, desenvolvida em Laravel 10.x.
 
-O objetivo deste teste é desenvolver uma **API Rest** para o cadastro de clientes, garantindo que o cliente esteja em um CEP valido.
+Funcionalidades
+Cadastro de clientes com validação de CPF e CEP
 
----
+Atualização de dados do cliente
 
-## **Descrição do Projeto**
+Exclusão de clientes
 
-### **Backend (API Laravel)**
+Listagem de clientes com filtros
 
-#### **Cadastro de Clientes**
-- Criar um cliente com as seguintes informações:
-  - Nome completo
-  - CPF (validado, único no banco)
-  - E-mail (validado, único no banco)
-  - Telefone
-  - CEP 
-  - Endereço (logradouro, bairro, cidade, estado)
+Consulta de cliente por ID
 
-- Editar um cliente
-- Excluir um cliente
-- Listar clientes (paginação, filtro por nome, CPF e CEP)
+Requisitos
+PHP 8.x
 
----
+Laravel 10.x
 
-### **Migrations**
-- Utilize migrations do Laravel para definir a estrutura do banco de dados, garantindo uma boa organização e facilidade de manutenção.
+MySQL ou PostgreSQL
 
----
+Composer
 
-### **Requisitos**
-- **Validar CPF** (formato correto e não permitir duplicação).
-- **Validar e-mail** (formato correto e não permitir duplicação).
-- **Validar endereço automaticamente** via [BrasilAPI](https://brasilapi.com.br/docs#tag/CEP-V2) ou qualquer outro endpoint público ao inserir ou atualizar um cliente.
+Instalação
+Clone o repositório:
+git clone https://github.com/seu-usuario/projeto.git
+cd projeto
 
+Instale as dependências:
+composer install
 
----
+Configure o ambiente:
+cp .env.example .env
 
-## **Critérios de Avaliação**
-- **Adesão aos requisitos funcionais e técnicos**
-- **Qualidade do código** (organização, padrões, segurança)
-- **Uso adequado do Laravel (migrations, Eloquent, validações, etc.)**
-- **README bem estruturado** com instruções de instalação e uso
+Configure o banco de dados no arquivo .env:
 
----
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nome_do_banco
+DB_USERNAME=usuario
+DB_PASSWORD=senha
+Execute as migrations:
+php artisan migrate
 
-## **Tecnologias a serem utilizadas**
-- **PHP 8.x**
-- **Laravel 10.x**
-- **Banco de Dados**: MySQL ou PostgreSQL
+Como Executar
+Inicie o servidor Laravel:
+php artisan serve
+A API estará disponível em: http://localhost:8000
 
----
+Endpoints
+1. Cadastrar Cliente
+POST /clientes
+Exemplo de requisição:
 
-## **Extra**
-- Implementação do **Repository Pattern**  
-- **Testes automatizados** (unitários ou de integração)  
-- **Dockerização** do ambiente para facilitar a instalação  
-- **Implementação de cache** para otimizar o desempenho 
+> json
 
----
+{"nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678"}
+Resposta de sucesso:
 
-## **Entrega**
-1. Faça um **fork** deste repositório.
-2. Crie uma **branch** com o seu nome.
-3. Altere o **README.md** com as instruções para rodar o projeto (comandos necessários, migrations, seeds, etc.).
-4. Após finalizar, envie um **pull request** para avaliação.
+> json
 
----
+{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP", "created_at": "2023-06-19T10:00:00.000000Z", "updated_at": "2023-06-19T10:00:00.000000Z"}
 
+2. Atualizar Cliente
+PUT /clientes/{id}
+Exemplo de requisição:
 
-Boa sorte! 🚀
+> json
+
+{"nome_completo": "João da Silva Filho", "cpf": "123.456.789-00", "email": "joao@novomail.com", "telefone": "11987654322", "cep": "87654321"}
+Resposta de sucesso:
+
+> json
+
+{"id": 1, "nome_completo": "João da Silva Filho", "cpf": "123.456.789-00", "email": "joao@novomail.com", "telefone": "11987654322", "cep": "87654321", "logradouro": "Rua Exemplo Novo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP", "created_at": "2023-06-19T10:00:00.000000Z", "updated_at": "2023-06-19T10:30:00.000000Z"}
+
+3. Excluir Cliente
+DELETE /clientes/{id}
+Resposta de sucesso:
+
+> json
+
+{"message": "Cliente excluído com sucesso"}
+
+4. Listar Clientes
+GET /clientes
+Parâmetros de filtro:
+
+nome_completo: Filtro por nome
+
+cpf: Filtro por CPF
+
+cep: Filtro por CEP
+
+Exemplo de requisição:
+GET /clientes?nome_completo=João
+
+Resposta:
+
+> json
+
+[{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP"}]
+
+5. Buscar Cliente por ID
+GET /clientes/{id}
+Exemplo de requisição:
+GET /clientes/1
+
+Resposta:
+
+> json
+
+{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP"}
+Testando a API
+Recomenda-se utilizar o Postman ou similar para testar os endpoints da API.
