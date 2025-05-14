@@ -1,117 +1,187 @@
-API de Cadastro de Clientes - README
-Descrição
-API para cadastro de clientes com validação de CPF e CEP, desenvolvida em Laravel 10.x.
+# API de Cadastro de Clientes
 
-Funcionalidades
-Cadastro de clientes com validação de CPF e CEP
+API para cadastro de clientes com validação de CPF e CEP, desenvolvida em Laravel 10.x, configurada com Docker para facilitar o desenvolvimento.
 
-Atualização de dados do cliente
+---
 
-Exclusão de clientes
+## 🧰 Funcionalidades
 
-Listagem de clientes com filtros
+- Cadastro de clientes com validação de CPF e CEP
+- Atualização de dados do cliente
+- Exclusão de clientes
+- Listagem de clientes com filtros
+- Consulta de cliente por ID
 
-Consulta de cliente por ID
+---
 
-Requisitos
-PHP 8.x
+## ⚙️ Requisitos
 
-Laravel 10.x
+- PHP 8.x
+- Laravel 10.x
+- MySQL 8.0
+- Composer
+- Docker & Docker Compose
 
-MySQL ou PostgreSQL
+---
 
-Composer
+## 🚀 Instalação com Docker
 
-Instalação
 Clone o repositório:
-git clone https://github.com/seu-usuario/projeto.git
-cd projeto
+
+```bash
+git clone https://github.com/seu-usuario/seu-projeto.git
+cd seu-projeto
+```
+
+Copie o arquivo de ambiente:
+
+```bash
+cp .env.example .env
+```
+
+Configure o banco de dados no `.env`:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=clientes_db
+DB_USERNAME=root
+DB_PASSWORD=root
+```
+
+Suba os containers com Docker:
+
+```bash
+docker-compose up -d --build
+```
+
+Acesse o container da aplicação:
+
+```bash
+docker exec -it laravel_app bash
+```
 
 Instale as dependências:
+
+```bash
 composer install
+```
 
-Configure o ambiente:
-cp .env.example .env
+Gere a chave da aplicação:
 
-Configure o banco de dados no arquivo .env:
+```bash
+php artisan key:generate
+```
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=nome_do_banco
-DB_USERNAME=usuario
-DB_PASSWORD=senha
 Execute as migrations:
+
+```bash
 php artisan migrate
+```
 
-Como Executar
-Inicie o servidor Laravel:
-php artisan serve
-A API estará disponível em: http://localhost:8000
+---
 
-Endpoints
-1. Cadastrar Cliente
-POST /clientes
-Exemplo de requisição:
+## 🌐 Acessando a API
 
-> json
+Acesse no navegador:
 
-{"nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678"}
-Resposta de sucesso:
+```
+http://localhost:8000
+```
 
-> json
+---
 
-{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP", "created_at": "2023-06-19T10:00:00.000000Z", "updated_at": "2023-06-19T10:00:00.000000Z"}
+## 📡 Endpoints
 
-2. Atualizar Cliente
-PUT /clientes/{id}
-Exemplo de requisição:
+### 1. Cadastrar Cliente
+**POST /clientes**
 
-> json
+**Requisição:**
+```json
+{
+  "nome_completo": "João da Silva",
+  "cpf": "123.456.789-00",
+  "email": "joao@example.com",
+  "telefone": "11987654321",
+  "cep": "12345678"
+}
+```
 
-{"nome_completo": "João da Silva Filho", "cpf": "123.456.789-00", "email": "joao@novomail.com", "telefone": "11987654322", "cep": "87654321"}
-Resposta de sucesso:
+**Resposta:**
+```json
+{
+  "id": 1,
+  "nome_completo": "João da Silva",
+  "cpf": "123.456.789-00",
+  "email": "joao@example.com",
+  "telefone": "11987654321",
+  "cep": "12345678",
+  "logradouro": "Rua Exemplo",
+  "bairro": "Centro",
+  "cidade": "São Paulo",
+  "estado": "SP"
+}
+```
 
-> json
+### 2. Atualizar Cliente
+**PUT /clientes/{id}**
 
-{"id": 1, "nome_completo": "João da Silva Filho", "cpf": "123.456.789-00", "email": "joao@novomail.com", "telefone": "11987654322", "cep": "87654321", "logradouro": "Rua Exemplo Novo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP", "created_at": "2023-06-19T10:00:00.000000Z", "updated_at": "2023-06-19T10:30:00.000000Z"}
+```json
+{
+  "nome_completo": "João da Silva Filho",
+  "cpf": "123.456.789-00",
+  "email": "joao@novomail.com",
+  "telefone": "11987654322",
+  "cep": "87654321"
+}
+```
 
-3. Excluir Cliente
-DELETE /clientes/{id}
-Resposta de sucesso:
+### 3. Excluir Cliente
+**DELETE /clientes/{id}**
 
-> json
+**Resposta:**
+```json
+{ "message": "Cliente excluído com sucesso" }
+```
 
-{"message": "Cliente excluído com sucesso"}
+### 4. Listar Clientes
+**GET /clientes**
 
-4. Listar Clientes
-GET /clientes
-Parâmetros de filtro:
+**Parâmetros de filtro:**
+- nome_completo
+- cpf
+- cep
 
-nome_completo: Filtro por nome
+### 5. Buscar Cliente por ID
+**GET /clientes/{id}**
 
-cpf: Filtro por CPF
+---
 
-cep: Filtro por CEP
+## 🧪 Testes
 
-Exemplo de requisição:
-GET /clientes?nome_completo=João
+Use ferramentas como [Postman](https://www.postman.com/) para testar os endpoints.
 
-Resposta:
+---
 
-> json
+## 📂 Containers Docker
 
-[{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP"}]
+- `app`: Laravel (PHP-FPM)
+- `db`: MySQL 8
+- `nginx`: Servidor web (porta 8000)
 
-5. Buscar Cliente por ID
-GET /clientes/{id}
-Exemplo de requisição:
-GET /clientes/1
+---
 
-Resposta:
+## 🧼 Parar o ambiente
 
-> json
+```bash
+docker-compose down
+```
 
-{"id": 1, "nome_completo": "João da Silva", "cpf": "123.456.789-00", "email": "joao@example.com", "telefone": "11987654321", "cep": "12345678", "logradouro": "Rua Exemplo", "bairro": "Centro", "cidade": "São Paulo", "estado": "SP"}
-Testando a API
-Recomenda-se utilizar o Postman ou similar para testar os endpoints da API.
+Com volumes:
+
+```bash
+docker-compose down -v
+```
+
+---

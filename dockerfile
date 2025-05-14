@@ -1,37 +1,34 @@
-# Imagem base com PHP 8.1 e extensões necessárias para o Laravel
-FROM php:8.1-fpm
+# Imagem base
+FROM php:8.2-fpm
 
-# Definir o diretório de trabalho
-WORKDIR /var/www
-
-# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
+    build-essential \
     libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
+    libjpeg-dev \
+    libonig-dev \
+    libxml2-dev \
     zip \
+    unzip \
+    curl \
     git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql
+    libzip-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
 
-# Instalar Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copiar os arquivos do projeto para o container
+WORKDIR /var/www
+
 COPY . .
 
-# Instalar as dependências do Laravel
-RUN composer install --no-interaction
+RUN composer install --no-dev --optimize-autoloader
 
-# Definir variáveis de ambiente para o Laravel
-ENV APP_ENV=local
-ENV APP_KEY=base64:YOUR_APP_KEY
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 755 /var/www
 
-# Permissões para o diretório de armazenamento
-RUN chown -R www-data:www-data /var/www/storage
+RUN composer install --no-dev --optimize-autoloader
 
-# Expor a porta 9000 para o servidor PHP-FPM
+RUN php-fpm
+
+RUN php artisan migrate
+
 EXPOSE 9000
-
-# Comando para iniciar o servidor PHP-FPM
-CMD ["php-fpm"]
